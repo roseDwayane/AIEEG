@@ -12,6 +12,7 @@ import torch.optim.lr_scheduler
 import numpy as np
 from scipy import signal
 from utils import draw_raw, imgSave, numpy_SNR, draw_psd, SNR_cal
+from dataGenerator import dataInit, dataDelete
 os.environ["CUDA_VISIBLE_DEVICES"]="0"
 
 def SNR(args, val_loader, model, epoch):
@@ -562,10 +563,12 @@ class model_train_parameter():
         self.loadpickle = './'
 
 def main_train():
-    trainValidateSegmentation(args=model_train_parameter([1, 0, 0], './Simulate_1'))
-    #trainValidateSegmentation(args=model_train_parameter([0, 1, 0], './Simulate_2'))
-    #trainValidateSegmentation(args=model_train_parameter([0, 0, 1], './Simulate_3'))
-    #trainValidateSegmentation(args=model_train_parameter([1, 1, 1], './Simulate_4'))
-
+    for i in range(10):
+        dataInit(i,i+3)
+        trainValidateSegmentation(args=model_train_parameter([1, 0, 0], './'+ str(i) + '-' + str(i+3) + '_Simulate_1'))
+        trainValidateSegmentation(args=model_train_parameter([0, 1, 0], './'+ str(i) + '-' + str(i+3) + '_Simulate_2'))
+        trainValidateSegmentation(args=model_train_parameter([0, 0, 1], './'+ str(i) + '-' + str(i+3) + '_Simulate_3'))
+        trainValidateSegmentation(args=model_train_parameter([1, 1, 1], './'+ str(i) + '-' + str(i+3) + '_Simulate_4'))
+        dataDelete("./simulate_data/")
 if __name__ == '__main__':
     main_train()
