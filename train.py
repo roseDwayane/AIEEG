@@ -209,10 +209,11 @@ def val(args, val_loader, model, criterion):
         loss2 = sum(loss4sec) / len(loss4sec)
         loss3 = sum(loss4third) / len(loss4third)
 
+        #loss = torch.Tensor(np.array(args.loss[0] * loss1 + args.loss[1] * loss2 + args.loss[2] * loss3)).requires_grad_()
         loss = torch.Tensor(
-            np.array(args.loss[0] * loss1 + args.loss[1] * loss2 + args.loss[2] * loss3)).requires_grad_()
-        loss = lossf + loss
-        #loss = lossf
+            np.array(1 * loss1 + 0 * loss2 + 0 * loss3)).requires_grad_()
+        #loss = lossf + loss
+        loss = loss
 
         epoch_loss.append(loss.item())
 
@@ -261,8 +262,42 @@ def train(args, train_loader, model, criterion, optimizer, epoch):
 
         #print("train(output): ", output.shape[1])
         #print("train(target): ", target.shape)
-
         '''
+                loss4one = []
+                loss4sec = []
+                loss4third = []
+                for j in range(int(output.shape[1])):
+                    loss = criterion(output[:,j,:], target[:,j,:])
+
+                    doutput = output[:, j, 1:] - output[:, j, :-1]
+                    dtarget = target[:, j, 1:] - target[:, j, :-1]
+                    loss2 = criterion(doutput, dtarget)
+
+                    #print("train(shape):", doutput.shape)
+
+                    d2output = doutput[:, 1:] - doutput[:, :-1]
+                    d2target = dtarget[:, 1:] - dtarget[:, :-1]
+                    loss3 = criterion(d2output, d2target)
+
+                    loss4one.append(loss.item())
+                    loss4sec.append(loss2.item())
+                    loss4third.append(loss3.item())
+
+                #print("train(shape):", loss4one)
+
+
+                #print("train(lossf)", lossf)
+
+
+                loss1 = sum(loss4one) / len(loss4one)
+                loss2 = sum(loss4sec) / len(loss4sec)
+                loss3 = sum(loss4third) / len(loss4third)
+
+                loss = torch.Tensor(np.array(args.loss[0] * loss1 + args.loss[1] * loss2 + args.loss[2] * loss3)).requires_grad_()
+                loss = lossf + loss
+                '''
+
+
         loss = criterion(output, target)
 
         doutput = output[:, :, 1:] - output[:, :, :-1]
@@ -273,35 +308,9 @@ def train(args, train_loader, model, criterion, optimizer, epoch):
         d2target = dtarget[:, :, 1:] - dtarget[:, :, :-1]
         loss3 = criterion(d2output, d2target)
 
-        loss = args.loss[0] * loss + args.loss[1] * loss2 + args.loss[2] * loss3
-        '''
-
-        #signal_MSE
-        loss4one = []
-        loss4sec = []
-        loss4third = []
-        for j in range(int(output.shape[1])):
-            loss = criterion(output[:,j,:], target[:,j,:])
-
-            doutput = output[:, j, 1:] - output[:, j, :-1]
-            dtarget = target[:, j, 1:] - target[:, j, :-1]
-            loss2 = criterion(doutput, dtarget)
-
-            #print("train(shape):", doutput.shape)
-
-            d2output = doutput[:, 1:] - doutput[:, :-1]
-            d2target = dtarget[:, 1:] - dtarget[:, :-1]
-            loss3 = criterion(d2output, d2target)
-
-            loss4one.append(loss.item())
-            loss4sec.append(loss2.item())
-            loss4third.append(loss3.item())
-
-        #print("train(shape):", loss4one)
-
-        #freq_MSE
-        output_freq = torch.rfft(output,1)
-        target_freq = torch.rfft(target,1)
+        # freq_MSE
+        output_freq = torch.rfft(output, 1)
+        target_freq = torch.rfft(target, 1)
 
         output_freq = sum(abs(output_freq.T)) / len(output_freq.T)
         target_freq = sum(abs(target_freq.T)) / len(target_freq.T)
@@ -310,15 +319,11 @@ def train(args, train_loader, model, criterion, optimizer, epoch):
         target_freq = target_freq / torch.std(target_freq)
 
         lossf = criterion(output_freq, target_freq)
-        #print("train(lossf)", lossf)
+
+        loss_total = args.loss[0] * loss + args.loss[1] * loss2 + args.loss[2] * loss3 + lossf
 
 
-        loss1 = sum(loss4one) / len(loss4one)
-        loss2 = sum(loss4sec) / len(loss4sec)
-        loss3 = sum(loss4third) / len(loss4third)
-
-        loss = torch.Tensor(np.array(args.loss[0] * loss1 + args.loss[1] * loss2 + args.loss[2] * loss3)).requires_grad_()
-        loss = lossf + loss
+        #signal_MSE
         #loss = lossf
         #print("train:", type(lossf), lossf.item(), loss1)
 
@@ -332,7 +337,7 @@ def train(args, train_loader, model, criterion, optimizer, epoch):
 
         #print("loss(shape):", epoch_loss)
 
-        print('[%3d/%3d] loss1: %.8f loss2: %.8f loss3: %.8f lossf: %.8f total_loss: %.8f time:%.8f' % (i, total_batches, loss1, loss2, loss3, lossf.item(), loss.item(), time_taken))
+        print('[%3d/%3d] loss1: %.8f loss2: %.8f loss3: %.8f lossf: %.8f total_loss: %.8f time:%.8f' % (i, total_batches, loss.item(), loss2.item(), loss3.item(), lossf.item(), loss_total.item(), time_taken))
 
     average_epoch_loss_train = sum(epoch_loss) / len(epoch_loss)
 
@@ -564,11 +569,12 @@ class model_train_parameter():
 
 def main_train():
     for i in range(10):
-        dataInit(i,i+3)
-        trainValidateSegmentation(args=model_train_parameter([1, 0, 0], './'+ str(i) + '-' + str(i+3) + '_Simulate_1'))
-        trainValidateSegmentation(args=model_train_parameter([0, 1, 0], './'+ str(i) + '-' + str(i+3) + '_Simulate_2'))
-        trainValidateSegmentation(args=model_train_parameter([0, 0, 1], './'+ str(i) + '-' + str(i+3) + '_Simulate_3'))
-        trainValidateSegmentation(args=model_train_parameter([1, 1, 1], './'+ str(i) + '-' + str(i+3) + '_Simulate_4'))
+        i=1
+        #dataInit(1,i+50)
+        #trainValidateSegmentation(args=model_train_parameter([1, 0, 0], './'+ str(i) + '-' + str(i+50) + '_Simulate_1'))
+        #trainValidateSegmentation(args=model_train_parameter([0, 1, 0], './'+ str(i) + '-' + str(i+50) + '_Simulate_2'))
+        #trainValidateSegmentation(args=model_train_parameter([0, 0, 1], './'+ str(i) + '-' + str(i+50) + '_Simulate_3'))
+        trainValidateSegmentation(args=model_train_parameter([1, 1, 1], './'+ str(i) + '-' + str(i+50) + '_Simulate_4'))
         dataDelete("./simulate_data/")
 if __name__ == '__main__':
     main_train()
