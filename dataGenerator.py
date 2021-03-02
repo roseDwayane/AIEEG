@@ -53,35 +53,56 @@ def B_rand_gen(L, M):
     return target, data_std, freq, amp
     '''
 
+
 def dataRestore(name_log):
-    with open(name_log, newline='') as f:
-        rows = csv.reader(f, delimiter='\t')
-        logger = []
-        for row in rows:
-            if row[0] == "ID":
-                continue
-            logger.append(row)
+    try:
+        os.mkdir("./simulate_data/")
+    except OSError as e:
+        print(e)
+    Gen_mode = ["train", "test", "val"]
+    for k in range(len(Gen_mode)):
+        mode = Gen_mode[k]
+        try:
+            os.mkdir("./simulate_data/" + mode + "/")
+        except OSError as e:
+            print(e)
 
-    para = np.array(logger).astype(np.float)
+        name = "./datalog/" + str(mode) + "/" + str(name_log)
+        with open(name, newline='') as f:
+            rows = csv.reader(f, delimiter='\t')
+            logger = []
+            for row in rows:
+                if row[0] == "ID":
+                    continue
+                logger.append(row)
 
-    time1 = np.linspace(np.random.randn(), np.pi * 2 * para[1] * 4, 1024)
-    time2 = np.linspace(np.random.randn(), np.pi * 2 * para[2] * 4, 1024)
-    time3 = np.linspace(np.random.randn(), np.pi * 2 * para[3] * 4, 1024)
-    time4 = np.linspace(np.random.randn(), np.pi * 2 * para[4] * 4, 1024)
-    time5 = np.linspace(np.random.randn(), np.pi * 2 * para[5] * 4, 1024)
-    time6 = np.linspace(np.random.randn(), np.pi * 2 * para[6] * 4, 1024)
-    data = []
-    for i in range(19):
-        data1 = np.sin(time1) * para[7]
-        data2 = np.sin(time2) * para[8]
-        data3 = np.sin(time3) * para[9]
-        data4 = np.sin(time4) * para[10]
-        data5 = np.sin(time5) * para[11]
-        data6 = np.sin(time6) * para[12]
-        data.append(data1 + data2 + data3 + data4 + data5 + data6)
+        para = np.array(logger).astype(np.float)
+        print(para.shape[0])
 
-    data = np.array(data).astype(np.float)
-    return data
+        for j in range(int(para.shape[0])):
+            time1 = np.linspace(np.random.randn(), np.pi * 2 * para[j, 1] * 4, 1024)
+            time2 = np.linspace(np.random.randn(), np.pi * 2 * para[j, 2] * 4, 1024)
+            time3 = np.linspace(np.random.randn(), np.pi * 2 * para[j, 3] * 4, 1024)
+            time4 = np.linspace(np.random.randn(), np.pi * 2 * para[j, 4] * 4, 1024)
+            time5 = np.linspace(np.random.randn(), np.pi * 2 * para[j, 5] * 4, 1024)
+            time6 = np.linspace(np.random.randn(), np.pi * 2 * para[j, 6] * 4, 1024)
+            data = []
+            for i in range(19):
+                data1 = np.sin(time1) * para[j, 7]
+                data2 = np.sin(time2) * para[j, 8]
+                data3 = np.sin(time3) * para[j, 9]
+                data4 = np.sin(time4) * para[j, 10]
+                data5 = np.sin(time5) * para[j, 11]
+                data6 = np.sin(time6) * para[j, 12]
+                data.append(data1 + data2 + data3 + data4 + data5 + data6)
+
+            data = np.array(data).astype(np.float)
+
+            filename = "./simulate_data/" + mode + "/" + str(int(para[j, 0])) + '.pk'
+            with open(filename, 'wb+') as f:
+                pickle.dump(data, f)
+        print(mode, " complete!")
+    return 0
 
 def dataGen(mode, L, H):
     if mode == "train":

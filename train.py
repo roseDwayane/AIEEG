@@ -12,7 +12,7 @@ import torch.optim.lr_scheduler
 import numpy as np
 from scipy import signal
 from utils import draw_raw, imgSave, numpy_SNR, draw_psd, SNR_cal
-from dataGenerator import dataInit, dataDelete
+from dataGenerator import dataInit, dataDelete, dataRestore
 os.environ["CUDA_VISIBLE_DEVICES"]="0"
 
 def SNR(args, val_loader, model, epoch):
@@ -320,7 +320,7 @@ def train(args, train_loader, model, criterion, optimizer, epoch):
 
         lossf = criterion(output_freq, target_freq)
 
-        loss_total = args.loss[0] * loss + args.loss[1] * loss2 + args.loss[2] * loss3 + lossf
+        loss_total = args.loss[0] * loss + args.loss[1] * loss2 + args.loss[2] * loss3 + args.loss[3] * lossf
 
 
         #signal_MSE
@@ -548,12 +548,12 @@ def trainValidateSegmentation(args):
 class model_train_parameter():
     def __init__(self, loss, save):
         self.model = "cumbersome_model"  # cumbersome_model
-        self.max_epochs = 302
-        self.num_workers = 2
+        self.max_epochs = 150
+        self.num_workers = 8
         self.batch_size = 128
         self.sample_rate = 256
         self.step_loss = 100  # Decrease learning rate after how many epochs.
-        self.milestones = [100, 200, 250, 275]
+        self.milestones = [50, 100, 125, 140]
         self.loss = loss
         self.lr = 0.01  # 'Initial learning rate'
         self.save = save
@@ -569,12 +569,13 @@ class model_train_parameter():
 
 def main_train():
     for i in range(10):
-        i=1
-        #dataInit(1,i+50)
-        #trainValidateSegmentation(args=model_train_parameter([1, 0, 0], './'+ str(i) + '-' + str(i+50) + '_Simulate_1'))
-        #trainValidateSegmentation(args=model_train_parameter([0, 1, 0], './'+ str(i) + '-' + str(i+50) + '_Simulate_2'))
-        #trainValidateSegmentation(args=model_train_parameter([0, 0, 1], './'+ str(i) + '-' + str(i+50) + '_Simulate_3'))
-        trainValidateSegmentation(args=model_train_parameter([1, 1, 1], './'+ str(i) + '-' + str(i+50) + '_Simulate_4'))
+        name = str(i) + "-" + str(i+3) + "log.csv"
+        dataRestore(name)
+        trainValidateSegmentation(args=model_train_parameter([1, 0, 0, 0], './' + str(i) + '-' + str(i+3) + '_Simulate_1'))
+        trainValidateSegmentation(args=model_train_parameter([0, 1, 0, 0], './' + str(i) + '-' + str(i+3) + '_Simulate_2'))
+        trainValidateSegmentation(args=model_train_parameter([0, 0, 1, 0], './' + str(i) + '-' + str(i+3) + '_Simulate_3'))
+        trainValidateSegmentation(args=model_train_parameter([0, 0, 0, 1], './' + str(i) + '-' + str(i+3) + '_Simulate_4'))
+        trainValidateSegmentation(args=model_train_parameter([1, 1, 1, 1], './' + str(i) + '-' + str(i+3) + '_Simulate_5'))
         dataDelete("./simulate_data/")
 if __name__ == '__main__':
     main_train()
