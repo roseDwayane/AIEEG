@@ -568,14 +568,15 @@ class model_train_parameter():
         self.loadpickle = './'
 
 def main_train():
-    for i in range(10):
-        name = str(i) + "-" + str(i+3) + "log.csv"
+    for i in range(1):
+        i = 1
+        name = str(i) + "-" + str(i+3)
         dataRestore(name)
-        trainValidateSegmentation(args=model_train_parameter([1, 0, 0, 0], './' + str(i) + '-' + str(i+3) + '_Simulate_1'))
-        trainValidateSegmentation(args=model_train_parameter([0, 1, 0, 0], './' + str(i) + '-' + str(i+3) + '_Simulate_2'))
-        trainValidateSegmentation(args=model_train_parameter([0, 0, 1, 0], './' + str(i) + '-' + str(i+3) + '_Simulate_3'))
-        trainValidateSegmentation(args=model_train_parameter([0, 0, 0, 1], './' + str(i) + '-' + str(i+3) + '_Simulate_4'))
-        trainValidateSegmentation(args=model_train_parameter([1, 1, 1, 1], './' + str(i) + '-' + str(i+3) + '_Simulate_5'))
-        dataDelete("./simulate_data/")
+        #trainValidateSegmentation(args=model_train_parameter([1, 0, 0, 0], './' + str(i) + '-' + str(i+3) + '_Simulate_1'))
+        #trainValidateSegmentation(args=model_train_parameter([0, 1, 0, 0], './' + str(i) + '-' + str(i+3) + '_Simulate_2'))
+        #trainValidateSegmentation(args=model_train_parameter([0, 0, 1, 0], './' + str(i) + '-' + str(i+3) + '_Simulate_3'))
+        #trainValidateSegmentation(args=model_train_parameter([0, 0, 0, 1], './' + str(i) + '-' + str(i+3) + '_Simulate_4'))
+        #trainValidateSegmentation(args=model_train_parameter([1, 1, 1, 1], './' + str(i) + '-' + str(i+3) + '_Simulate_5'))
+        dataDelete("./" + name + "_simulate_data/")
 if __name__ == '__main__':
     main_train()

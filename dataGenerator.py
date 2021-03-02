@@ -56,18 +56,18 @@ def B_rand_gen(L, M):
 
 def dataRestore(name_log):
     try:
-        os.mkdir("./simulate_data/")
+        os.mkdir("./" + name_log + "_simulate_data/")
     except OSError as e:
         print(e)
     Gen_mode = ["train", "test", "val"]
     for k in range(len(Gen_mode)):
         mode = Gen_mode[k]
         try:
-            os.mkdir("./simulate_data/" + mode + "/")
+            os.mkdir("./" + name_log + "_simulate_data/" + mode + "/")
         except OSError as e:
             print(e)
 
-        name = "./datalog/" + str(mode) + "/" + str(name_log)
+        name = "./datalog/" + str(mode) + "/" + str(name_log) + "log.csv"
         with open(name, newline='') as f:
             rows = csv.reader(f, delimiter='\t')
             logger = []
@@ -98,7 +98,7 @@ def dataRestore(name_log):
 
             data = np.array(data).astype(np.float)
 
-            filename = "./simulate_data/" + mode + "/" + str(int(para[j, 0])) + '.pk'
+            filename = "./" + name_log + "_simulate_data/" + mode + "/" + str(int(para[j, 0])) + '.pk'
             with open(filename, 'wb+') as f:
                 pickle.dump(data, f)
         print(mode, " complete!")
