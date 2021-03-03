@@ -169,28 +169,15 @@ def val(args, val_loader, model, criterion):
         # run the mdoel
             output = model(input)
 
-        # signal_MSE
-        loss4one = []
-        loss4sec = []
-        loss4third = []
-        for j in range(int(output.shape[1])):
-            loss = criterion(output[:, j, :], target[:, j, :])
+        loss = criterion(output, target)
 
-            doutput = output[:, j, 1:] - output[:, j, :-1]
-            dtarget = target[:, j, 1:] - target[:, j, :-1]
-            loss2 = criterion(doutput, dtarget)
+        doutput = output[:, :, 1:] - output[:, :, :-1]
+        dtarget = target[:, :, 1:] - target[:, :, :-1]
+        loss2 = criterion(doutput, dtarget)
 
-            # print("train(shape):", doutput.shape)
-
-            d2output = doutput[:, 1:] - doutput[:, :-1]
-            d2target = dtarget[:, 1:] - dtarget[:, :-1]
-            loss3 = criterion(d2output, d2target)
-
-            loss4one.append(loss.item())
-            loss4sec.append(loss2.item())
-            loss4third.append(loss3.item())
-
-        # print("train(shape):", loss4one)
+        d2output = doutput[:, :, 1:] - doutput[:, :, :-1]
+        d2target = dtarget[:, :, 1:] - dtarget[:, :, :-1]
+        loss3 = criterion(d2output, d2target)
 
         # freq_MSE
         output_freq = torch.rfft(output, 1)
@@ -199,23 +186,14 @@ def val(args, val_loader, model, criterion):
         output_freq = sum(abs(output_freq.T)) / len(output_freq.T)
         target_freq = sum(abs(target_freq.T)) / len(target_freq.T)
 
-        output_freq = (output_freq - torch.mean(output_freq)) / torch.std(output_freq)
-        target_freq = (target_freq - torch.mean(target_freq)) / torch.std(target_freq)
+        output_freq = output_freq / torch.std(target_freq)
+        target_freq = target_freq / torch.std(target_freq)
 
         lossf = criterion(output_freq, target_freq)
-        # print("train(lossf)", lossf)
 
-        loss1 = sum(loss4one) / len(loss4one)
-        loss2 = sum(loss4sec) / len(loss4sec)
-        loss3 = sum(loss4third) / len(loss4third)
+        loss_total = args.loss[0] * loss + args.loss[1] * loss2 + args.loss[2] * loss3 + args.loss[3] * lossf
 
-        #loss = torch.Tensor(np.array(args.loss[0] * loss1 + args.loss[1] * loss2 + args.loss[2] * loss3)).requires_grad_()
-        loss = torch.Tensor(
-            np.array(1 * loss1 + 0 * loss2 + 0 * loss3)).requires_grad_()
-        #loss = lossf + loss
-        loss = loss
-
-        epoch_loss.append(loss.item())
+        epoch_loss.append(loss_total.item())
 
         time_taken = time.time() - start_time
 
@@ -224,13 +202,13 @@ def val(args, val_loader, model, criterion):
 
         #print('[%d/%d] loss: %.3f time: %.2f' % (i, total_batches, loss.item(), time_taken))
         print('[%d/%d] loss1: %.6f loss2: %.6f loss3: %.6f lossf: %.6f total_loss: %.6f time:%.2f' % (
-        i, total_batches, loss1, loss2, loss3, lossf.item(), loss.item(), time_taken))
+        i, total_batches, loss.item(), loss2.item(), loss3.item(), lossf.item(), loss_total.item(), time_taken))
 
 
     average_epoch_loss_val = sum(epoch_loss) / len(epoch_loss)
 
 
-    return loss1, loss2, loss3, lossf.item(), loss.item()
+    return loss.item(), loss2.item(), loss3.item(), lossf.item(), loss_total.item()
 
 def train(args, train_loader, model, criterion, optimizer, epoch):
     '''
@@ -570,7 +548,7 @@ class model_train_parameter():
 
 def main_train():
     for i in range(1):
-        i = 1
+        i = 13
         name = str(i) + "-" + str(i+3)
         dataRestore(name)
         trainValidateSegmentation(args=model_train_parameter([1, 0, 0, 0], './' + name + '_Simulate_1', "./" + name + "_simulate_data/"))
