@@ -463,18 +463,18 @@ def trainValidateSegmentation(args):
 
     for my_iter in range(1):
 
-        trainset = myDataset(mode=0, iter=my_iter+30)  # file='./EEG_EC_Data_csv/train.txt'
+        trainset = myDataset(mode=0, iter=my_iter+30, data=args.savedata)  # file='./EEG_EC_Data_csv/train.txt'
         train_loader = torch.utils.data.DataLoader(
             trainset, batch_size=args.batch_size, shuffle=True, num_workers=args.num_workers, pin_memory=True)
 
-        testset = myDataset(mode=1, iter=my_iter + 30)  # file='./EEG_EC_Data_csv/train.txt'
+        testset = myDataset(mode=1, iter=my_iter + 30, data=args.savedata)  # file='./EEG_EC_Data_csv/train.txt'
         test_loader = torch.utils.data.DataLoader(
             testset, batch_size=args.batch_size, shuffle=False, num_workers=args.num_workers, pin_memory=True)
 
         # valLoader = torch.utils.data.DataLoader(
         #    myDataLoader.MyDataset(data['valIm'], data['valAnnot'], (args.inWidth, args.inHeight), flag_aug=0),
         #    batch_size=args.batch_size, shuffle=False, num_workers=args.num_workers, pin_memory=True)
-        valset = myDataset(mode=2, iter=my_iter+2)
+        valset = myDataset(mode=2, iter=my_iter+2, data=args.savedata)
         val_loader = torch.utils.data.DataLoader(
             valset, batch_size=args.batch_size, shuffle=True, num_workers=args.num_workers, pin_memory=True)
 
@@ -546,7 +546,7 @@ def trainValidateSegmentation(args):
     logger.close()
 
 class model_train_parameter():
-    def __init__(self, loss, save):
+    def __init__(self, loss, save, data):
         self.model = "cumbersome_model"  # cumbersome_model
         self.max_epochs = 150
         self.num_workers = 8
@@ -557,6 +557,7 @@ class model_train_parameter():
         self.loss = loss
         self.lr = 0.01  # 'Initial learning rate'
         self.save = save
+        self.savedata = data
         self.savedir = self.save + '/modelsave'  # directory to save the results
         self.savefig = self.save + '/result'
         self.resume = True  # Use this flag to load last checkpoint for training
@@ -572,11 +573,11 @@ def main_train():
         i = 1
         name = str(i) + "-" + str(i+3)
         dataRestore(name)
-        #trainValidateSegmentation(args=model_train_parameter([1, 0, 0, 0], './' + str(i) + '-' + str(i+3) + '_Simulate_1'))
-        #trainValidateSegmentation(args=model_train_parameter([0, 1, 0, 0], './' + str(i) + '-' + str(i+3) + '_Simulate_2'))
-        #trainValidateSegmentation(args=model_train_parameter([0, 0, 1, 0], './' + str(i) + '-' + str(i+3) + '_Simulate_3'))
-        #trainValidateSegmentation(args=model_train_parameter([0, 0, 0, 1], './' + str(i) + '-' + str(i+3) + '_Simulate_4'))
-        #trainValidateSegmentation(args=model_train_parameter([1, 1, 1, 1], './' + str(i) + '-' + str(i+3) + '_Simulate_5'))
+        trainValidateSegmentation(args=model_train_parameter([1, 0, 0, 0], './' + name + '_Simulate_1', "./" + name + "_simulate_data/"))
+        trainValidateSegmentation(args=model_train_parameter([0, 1, 0, 0], './' + name + '_Simulate_2', "./" + name + "_simulate_data/"))
+        trainValidateSegmentation(args=model_train_parameter([0, 0, 1, 0], './' + name + '_Simulate_3', "./" + name + "_simulate_data/"))
+        trainValidateSegmentation(args=model_train_parameter([0, 0, 0, 1], './' + name + '_Simulate_4', "./" + name + "_simulate_data/"))
+        trainValidateSegmentation(args=model_train_parameter([1, 1, 1, 1], './' + name + '_Simulate_5', "./" + name + "_simulate_data/"))
         dataDelete("./" + name + "_simulate_data/")
 if __name__ == '__main__':
     main_train()

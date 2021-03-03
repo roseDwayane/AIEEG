@@ -10,16 +10,14 @@ import pickle
 epsilon = np.finfo(float).eps
 
 class myDataset(Dataset):
-    def __init__(self, mode, iter=20):
+    def __init__(self, mode, iter=20, data="0-3"):
         self.sample_rate = 256
-        #self.lenth = 54418
-        #self.lenthtest = 64
-        #self.lenthval = 572
         self.lenth = 8192
         self.lenthtest = 1024
         self.lenthval = 1024
         self.mode = mode
         self.iter = iter
+        self.savedata = data
 
     def __len__(self):
         if self.mode == 2:
@@ -52,13 +50,13 @@ class myDataset(Dataset):
 
         '''
         if self.mode == 2:
-            file_name = './simulate_data/val/' + str(idx) + '.pk'
+            file_name = self.savedata + 'val/' + str(idx) + '.pk'
             data = self.read_simulate_data(file_name)
         elif self.mode == 1:
-            file_name = './simulate_data/test/' + str(idx) + '.pk'
+            file_name = self.savedata + 'test/' + str(idx) + '.pk'
             data = self.read_simulate_data(file_name)
         else:
-            file_name = './simulate_data/train/' + str(idx) + '.pk'
+            file_name = self.savedata + 'train/' + str(idx) + '.pk'
             data = self.read_simulate_data(file_name)
 
         noise = np.zeros(1024)
@@ -148,7 +146,7 @@ class myDataset(Dataset):
         return data
 
     def read_simulate_data(self, file_name):
-        with open('./simulate_data/train/3621.pk', 'rb+') as f:
+        with open(file_name, 'rb+') as f:
             data = pickle.load(f)
         data = np.array(data).astype(np.float)
         return data
