@@ -169,7 +169,7 @@ def val(args, val_loader, model, criterion):
         # run the mdoel
             output = model(input)
 
-        loss = criterion(output, target)
+        loss1 = criterion(output, target)
 
         doutput = output[:, :, 1:] - output[:, :, :-1]
         dtarget = target[:, :, 1:] - target[:, :, :-1]
@@ -191,9 +191,9 @@ def val(args, val_loader, model, criterion):
 
         lossf = criterion(output_freq, target_freq)
 
-        loss_total = args.loss[0] * loss + args.loss[1] * loss2 + args.loss[2] * loss3 + args.loss[3] * lossf
+        loss = args.loss[0] * loss1 + args.loss[1] * loss2 + args.loss[2] * loss3 + args.loss[3] * lossf
 
-        epoch_loss.append(loss_total.item())
+        epoch_loss.append(loss.item())
 
         time_taken = time.time() - start_time
 
@@ -202,13 +202,13 @@ def val(args, val_loader, model, criterion):
 
         #print('[%d/%d] loss: %.3f time: %.2f' % (i, total_batches, loss.item(), time_taken))
         print('[%d/%d] loss1: %.6f loss2: %.6f loss3: %.6f lossf: %.6f total_loss: %.6f time:%.2f' % (
-        i, total_batches, loss.item(), loss2.item(), loss3.item(), lossf.item(), loss_total.item(), time_taken))
+        i, total_batches, loss1.item(), loss2.item(), loss3.item(), lossf.item(), loss.item(), time_taken))
 
 
     average_epoch_loss_val = sum(epoch_loss) / len(epoch_loss)
 
 
-    return loss.item(), loss2.item(), loss3.item(), lossf.item(), loss_total.item()
+    return loss1.item(), loss2.item(), loss3.item(), lossf.item(), loss.item()
 
 def train(args, train_loader, model, criterion, optimizer, epoch):
     '''
@@ -276,7 +276,7 @@ def train(args, train_loader, model, criterion, optimizer, epoch):
                 '''
 
 
-        loss = criterion(output, target)
+        loss1 = criterion(output, target)
 
         doutput = output[:, :, 1:] - output[:, :, :-1]
         dtarget = target[:, :, 1:] - target[:, :, :-1]
@@ -298,7 +298,8 @@ def train(args, train_loader, model, criterion, optimizer, epoch):
 
         lossf = criterion(output_freq, target_freq)
 
-        loss_total = args.loss[0] * loss + args.loss[1] * loss2 + args.loss[2] * loss3 + args.loss[3] * lossf
+        loss = args.loss[0] * loss1 + args.loss[1] * loss2 + args.loss[2] * loss3 + args.loss[3] * lossf
+        #print(loss.type, loss)
 
 
         #signal_MSE
@@ -315,7 +316,7 @@ def train(args, train_loader, model, criterion, optimizer, epoch):
 
         #print("loss(shape):", epoch_loss)
 
-        print('[%3d/%3d] loss1: %.8f loss2: %.8f loss3: %.8f lossf: %.8f total_loss: %.8f time:%.8f' % (i, total_batches, loss.item(), loss2.item(), loss3.item(), lossf.item(), loss_total.item(), time_taken))
+        print('[%3d/%3d] loss1: %.8f loss2: %.8f loss3: %.8f lossf: %.8f total_loss: %.8f time:%.8f' % (i, total_batches, loss1.item(), loss2.item(), loss3.item(), lossf.item(), loss.item(), time_taken))
 
     average_epoch_loss_train = sum(epoch_loss) / len(epoch_loss)
 
@@ -527,7 +528,7 @@ class model_train_parameter():
     def __init__(self, loss, save, data):
         self.model = "cumbersome_model"  # cumbersome_model
         self.max_epochs = 150
-        self.num_workers = 8
+        self.num_workers = 2
         self.batch_size = 128
         self.sample_rate = 256
         self.step_loss = 100  # Decrease learning rate after how many epochs.
@@ -548,10 +549,10 @@ class model_train_parameter():
 
 def main_train():
     for i in range(1):
-        i = 13
+        i = 1
         name = str(i) + "-" + str(i+3)
-        dataRestore(name)
-        trainValidateSegmentation(args=model_train_parameter([1, 0, 0, 0], './' + name + '_Simulate_1', "./" + name + "_simulate_data/"))
+        #dataRestore(name)
+        #trainValidateSegmentation(args=model_train_parameter([1, 0, 0, 0], './' + name + '_Simulate_1', "./" + name + "_simulate_data/"))
         trainValidateSegmentation(args=model_train_parameter([0, 1, 0, 0], './' + name + '_Simulate_2', "./" + name + "_simulate_data/"))
         trainValidateSegmentation(args=model_train_parameter([0, 0, 1, 0], './' + name + '_Simulate_3', "./" + name + "_simulate_data/"))
         trainValidateSegmentation(args=model_train_parameter([0, 0, 0, 1], './' + name + '_Simulate_4', "./" + name + "_simulate_data/"))
