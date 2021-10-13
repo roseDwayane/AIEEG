@@ -1,6 +1,9 @@
 # IC-U-Net
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/0tHadL3kRjc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+[![IC-U-Net video](https://img.youtube.com/vi/0tHadL3kRjc/0.jpg)](https://www.youtube.com/embed/0tHadL3kRjc)
+
+
 
 [IC-U-Net](https://github.com/roseDwayane/AIEEG) is a project on EEG artifacts removal end-to-end process. 
 
