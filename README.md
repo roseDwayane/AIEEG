@@ -1,18 +1,30 @@
 # IC-U-Net
 
+<iframe width="560" height="315" src="https://www.youtube.com/embed/0tHadL3kRjc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
-[![IC-U-Net video](https://img.youtube.com/vi/0tHadL3kRjc/0.jpg)](https://www.youtube.com/embed/0tHadL3kRjc)
+## Introduction
+This is the Computational NeuroErgonomics x NeuroEducation ([CNElab](https://sites.google.com/view/chchuang/CNElab?authuser=0)) on EEG artifacts removal end-to-end process: [IC-U-Net](https://github.com/roseDwayane/AIEEG): A U-Net based Denoising Autoencoders using Mixtures of Independent Components for Automatic EEG Artifact Removal, written in Pytorch. The aim of this project is to
+* A novel EEG artifact removal method, IC-U-Net, is proposed.
+* IC-U-Net is built based on the U-Net architecture with a loss function ensemble.
+* IC-U-Net is trained using mixtures of EEG sources decomposed by independent component analysis.
+* IC-U-Net does not require parameter tuning and can simultaneously remove various types of artifacts.
+* IC-U-Net can facilitate the extraction of relatively more brain sources from noisy EEG signals.
 
+## Requirements
+* Python == 3.6
+* Pytorch == 1.6.0
+* numpy >= 1.19.2
 
-
-[IC-U-Net](https://github.com/roseDwayane/AIEEG) is a project on EEG artifacts removal end-to-end process. 
-
+## Evaluated Dataset
 We evaluate the model with lane-keeping drive data collected and walking experiment from [scientific data](https://www.nature.com/articles/s41597-019-0027-4) and [mygooglecloud](https://drive.google.com/drive/folders/1B8smvaYGgC-y_TSshIG23JbMmawoaA5E?usp=sharing).
 
-Sample results are available
-[working]().
+> __Ethics approval__ 
+All participants completed informed consent forms after receiving a complete explanation of the study. The Institutional Review Board of Taipei Veterans General Hospital approved the study protocol.
 
-> Looking for a PyTorch version? Check out [this repository](https://github.com/roseDwayane/AIEEG/blob/main/UNet1D-real/cumbersome_model.py).
+> __Consent to participate__
+All of the participants provided written informed consent prior to participation. The consent regarding publishing their data as a scientific report was also included.
+
+
 
 ## Prerequisites
 
@@ -86,14 +98,12 @@ python train.py
    (writing)
    ```
 
-## Outputs
-
-(writing)
-
 ## Sample Results
-
 (writing)
 
 ## Papers
+Under review on [NeuroImage](https://www.journals.elsevier.com/neuroimage)
 
-(writing)
+## Acknowledgement
+This work was supported by the Ministry of Science and Technology, Taiwan (project numbers: MOST 110-2636-E-007-018 and 109-2636-E-007-022), and by the Research Center for Education and Mind Sciences, National Tsing Hua University. No funding source had involved in any of the research procedures.
+
