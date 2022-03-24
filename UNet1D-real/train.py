@@ -187,8 +187,9 @@ def val(args, val_loader, model, criterion):
         output_freq = sum(abs(output_freq.T)) / len(output_freq.T)
         target_freq = sum(abs(target_freq.T)) / len(target_freq.T)
 
-        output_freq = output_freq / torch.std(target_freq)
-        target_freq = target_freq / torch.std(target_freq)
+        #output_freq = output_freq / torch.std(target_freq)
+        #target_freq = target_freq / torch.std(target_freq)
+
 
         lossf = criterion(output_freq, target_freq)
 
@@ -295,8 +296,8 @@ def train(args, train_loader, model, criterion, optimizer, epoch):
         output_freq = sum(abs(output_freq.T)) / len(output_freq.T)
         target_freq = sum(abs(target_freq.T)) / len(target_freq.T)
 
-        output_freq = output_freq / torch.std(target_freq)
-        target_freq = target_freq / torch.std(target_freq)
+        #output_freq = output_freq / torch.std(target_freq)
+        #target_freq = target_freq / torch.std(target_freq)
 
         lossf = criterion(output_freq, target_freq)
 
@@ -372,7 +373,7 @@ def trainValidateSegmentation(args):
         # model = tiny_model.TinyModel(args.classes, p=6, q=10, Pretrain=args.pretrained)
         pass
     elif args.model == 'cumbersome_model':
-        model = cumbersome_model.UNet(n_channels=19, n_classes=19, bilinear=True)
+        model = cumbersome_model.UNet(n_channels=30, n_classes=30, bilinear=True)
     args.savedir = args.savedir + '/'
     total_paramters = netParams(model)
     print('Total network parameters: ' + str(total_paramters))
@@ -485,8 +486,8 @@ def trainValidateSegmentation(args):
             #print(tmean, tstd, dmean, dstd)
 
             # Did validation loss improve?
-            is_best = lossVal < best_loss
-            best_loss = min(lossVal, best_loss)
+            is_best = lossTs < best_loss
+            best_loss = min(lossTs, best_loss)
 
             if not is_best:
                 epochs_since_improvement += 1
@@ -554,12 +555,12 @@ class model_train_parameter():
 def main_train():
     for i in range(1):
         i = 1
-        name = "test2"
+        name = "0207"
         #dataRestore(name)
-        #trainValidateSegmentation(args=model_train_parameter([1, 0, 0, 0], './' + name + '_Simulate_1', "./" + name + "_simulate_data/"))
-        #trainValidateSegmentation(args=model_train_parameter([0, 1, 0, 0], './' + name + '_Simulate_2', "./" + name + "_simulate_data/"))
-        #trainValidateSegmentation(args=model_train_parameter([0, 0, 1, 0], './' + name + '_Simulate_3', "./" + name + "_simulate_data/"))
-        #trainValidateSegmentation(args=model_train_parameter([0, 0, 0, 1], './' + name + '_Simulate_4', "./" + name + "_simulate_data/"))
+        trainValidateSegmentation(args=model_train_parameter([1, 0, 0, 0], './' + name + '_RealEEG_1', "./" + name + "_simulate_data/"))
+        trainValidateSegmentation(args=model_train_parameter([0, 1, 0, 0], './' + name + '_RealEEG_2', "./" + name + "_simulate_data/"))
+        trainValidateSegmentation(args=model_train_parameter([0, 0, 1, 0], './' + name + '_RealEEG_3', "./" + name + "_simulate_data/"))
+        trainValidateSegmentation(args=model_train_parameter([0, 0, 0, 1], './' + name + '_RealEEG_4', "./" + name + "_simulate_data/"))
         trainValidateSegmentation(args=model_train_parameter([1, 1, 1, 1], './' + name + '_RealEEG_5', "./" + name + "_simulate_data/"))
         #dataDelete("./" + name + "_simulate_data/")
 if __name__ == '__main__':
