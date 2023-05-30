@@ -85,6 +85,7 @@ def SNR_cal(input, target, decode, max_num):
 
     #print("(utils)SNR_id: ", snr_i_d)
     #print("(utils)SNR_it: ", snr_i_t)
+    #print("(utils)SNR_it: ", snr_i_t)
 
     return snr_i_t, snr_i_d
 
