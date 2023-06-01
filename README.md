@@ -1,9 +1,8 @@
 # IC-U-Net
-
-<iframe width="560" height="315" src="https://www.youtube.com/embed/0tHadL3kRjc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+[![Cover Page](https://img.youtube.com/vi/0tHadL3kRjc/0.jpg)](https://www.youtube.com/watch?v=0tHadL3kRjc)
 
 ## Introduction
-This is the Computational NeuroErgonomics x NeuroEducation ([CNElab](https://sites.google.com/view/chchuang/CNElab?authuser=0)) on EEG artifacts removal end-to-end process: [IC-U-Net](https://www.sciencedirect.com/science/article/pii/S1053811922007017): A U-Net based Denoising Autoencoders using Mixtures of Independent Components for Automatic EEG Artifact Removal, written in Pytorch. This journal has been accept by NeuroImage (IF:7.4). The aim of.  this project is to
+This is the Computational NeuroErgonomics x NeuroEducation ([CNElab](https://sites.google.com/view/chchuang/CNElab?authuser=0)) on EEG artifacts removal end-to-end process: [IC-U-Net](https://www.sciencedirect.com/science/article/pii/S1053811922007017): A U-Net based Denoising Autoencoders using Mixtures of Independent Components for Automatic EEG Artifact Removal, written in Pytorch. This journal has been accept by NeuroImage (IF:7.4). The aim of this project is to
 * A novel EEG artifact removal method, IC-U-Net, is proposed.
 * IC-U-Net is built based on the U-Net architecture with a loss function ensemble.
 * IC-U-Net is trained using mixtures of EEG sources decomposed by independent component analysis.
@@ -18,7 +17,7 @@ This is the Computational NeuroErgonomics x NeuroEducation ([CNElab](https://sit
 
 > __Below we assume the working directory is the repository root.__
 
-- Using pip
+- Using pip in your virtual environment
 
   ```sh
   # Install the dependencies
@@ -54,6 +53,8 @@ output_name = 'outputsample.csv'
 python main.py
 ```
 
+## Sample Results
+(writing)
 
 
 ## Evaluated Dataset
@@ -64,12 +65,6 @@ All participants completed informed consent forms after receiving a complete exp
 
 > __Consent to participate__
 All of the participants provided written informed consent prior to participation. The consent regarding publishing their data as a scientific report was also included.
-
-## Sample Results
-(writing)
-
-## Papers
-Under review on [NeuroImage](https://www.journals.elsevier.com/neuroimage)
 
 ## Acknowledgement
 This work was supported by the Ministry of Science and Technology, Taiwan (project numbers: MOST 110-2636-E-007-018 and 109-2636-E-007-022), and by the Research Center for Education and Mind Sciences, National Tsing Hua University. No funding source had involved in any of the research procedures.
