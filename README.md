@@ -3,7 +3,7 @@
 <iframe width="560" height="315" src="https://www.youtube.com/embed/0tHadL3kRjc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 ## Introduction
-This is the Computational NeuroErgonomics x NeuroEducation ([CNElab](https://sites.google.com/view/chchuang/CNElab?authuser=0)) on EEG artifacts removal end-to-end process: [IC-U-Net](https://github.com/roseDwayane/AIEEG): A U-Net based Denoising Autoencoders using Mixtures of Independent Components for Automatic EEG Artifact Removal, written in Pytorch. The aim of this project is to
+This is the Computational NeuroErgonomics x NeuroEducation ([CNElab](https://sites.google.com/view/chchuang/CNElab?authuser=0)) on EEG artifacts removal end-to-end process: [IC-U-Net](https://www.sciencedirect.com/science/article/pii/S1053811922007017): A U-Net based Denoising Autoencoders using Mixtures of Independent Components for Automatic EEG Artifact Removal, written in Pytorch. This journal has been accept by NeuroImage (IF:7.4). The aim of.  this project is to
 * A novel EEG artifact removal method, IC-U-Net, is proposed.
 * IC-U-Net is built based on the U-Net architecture with a loss function ensemble.
 * IC-U-Net is trained using mixtures of EEG sources decomposed by independent component analysis.
@@ -11,9 +11,50 @@ This is the Computational NeuroErgonomics x NeuroEducation ([CNElab](https://sit
 * IC-U-Net can facilitate the extraction of relatively more brain sources from noisy EEG signals.
 
 ## Requirements
-* Python == 3.6
-* Pytorch == 1.6.0
+* Python >= 3.8.13
 * numpy >= 1.19.2
+* Pytorch >= 1.11.0 (can just use cpu)
+* scipy >= 1.10.1
+
+> __Below we assume the working directory is the repository root.__
+
+- Using pip
+
+  ```sh
+  # Install the dependencies
+  pip install -r requirements.txt
+  ```
+
+- (if requirements.txt is not work)
+  ```sh
+  pip install numpy
+  pip install torch torchvision torchaudio
+  pip install scipy
+  ```
+
+## Data Specification
+![plot](./image/channel_location.JPG)
+The data format must be a two-dimensional array (30 channels, any timepoint), and the order of the channels please refer to the figure above.
+
+> The sample data `sampledata.csv` (30, 12568) is stored under the `./sampledata` folder, where the sample rate is 256 Hz.
+
+## Running Step
+- Step 1: Setting the parameters. Please modify `main.py` file in following scope:
+```python
+# parameter setting
+input_path = './sampledata/'
+input_name = 'sampledata.csv'
+sample_rate = 256 # input data sample rate
+modelname = 'ICUNet' # or 'UNetpp'
+output_path = './sampledata/'
+output_name = 'outputsample.csv'
+```
+- Step 2: Runing `main.py` in your terminal:
+```sh
+python main.py
+```
+
+
 
 ## Evaluated Dataset
 We evaluate the model with lane-keeping drive data collected and walking experiment from [scientific data](https://www.nature.com/articles/s41597-019-0027-4) and [mygooglecloud](https://drive.google.com/drive/folders/1B8smvaYGgC-y_TSshIG23JbMmawoaA5E?usp=sharing).
@@ -23,80 +64,6 @@ All participants completed informed consent forms after receiving a complete exp
 
 > __Consent to participate__
 All of the participants provided written informed consent prior to participation. The consent regarding publishing their data as a scientific report was also included.
-
-
-
-## Prerequisites
-
-> __Below we assume the working directory is the repository root.__
-
-### Install dependencies
-
-- Using pipenv (recommended)
-
-  > Make sure `pipenv` is installed. (If not, simply run `pip install pipenv`.)
-
-  ```sh
-  # Install the dependencies
-  pipenv install
-  # Activate the virtual environment
-  pipenv shell
-  ```
-
-- Using pip
-
-  ```sh
-  # Install the dependencies
-  pip install -r requirements.txt
-  ```
-
-### (Sim) Prepare training
-
-> The training data can be download from
-> `./UNet1D_sim/datalog/train/1-51log.csv`
-Each data was randomly generated from the frequency(1-51Hz), amplitude(0-1), phase(0-2pi)
-```sh
-# Generate the raw data in 
-# (function) dataRestore(name)
-# you can run the code
-python train.py
-```
-
-### (Real) Prepare training
-
-> Real EEG training data could not be open right now. But you can prepare for yourself with 30 channel and 1024 points (4sec, 256 sample rate)
-
-```sh
-# you can run the code
-python train.py
-```
-
-## Scripts
-
-### Use pretrained models
-
-1. Download pretrained models
-
-   ```sh
-   # Download the pretrained models
-   ./UNet1D_real/final_RealEEG_5/modelsave/BEST_checkpoint.pth.tar
-   #or
-   ./UNet1D_real/final_RealEEG_5/modelsave/checkpoint.pth.tar
-   ```
-
-2. You can either perform inference from a trained model:
-
-   ```sh
-   # Run inference from a pretrained model
-   (writing)
-   ```
-
-   or perform interpolation from a trained model:
-
-   ```sh
-   # Run interpolation from a pretrained model
-   (writing)
-   ```
 
 ## Sample Results
 (writing)

@@ -34,7 +34,7 @@ def resample(signal, fs):
     else:
         signal_new = signal
 
-    signal_new = np.array(signal_new).astype(np.float)
+    signal_new = np.array(signal_new).astype(np.float64)
 
     return signal_new
 
@@ -57,12 +57,12 @@ def read_train_data(file_name):
         for line in lines:
             data.append(line)
 
-    data = np.array(data).astype(np.float)
+    data = np.array(data).astype(np.float64)
     return data
 
 
 def cut_data(raw_data):
-    raw_data = np.array(raw_data).astype(np.float)
+    raw_data = np.array(raw_data).astype(np.float64)
     total = int(len(raw_data[0]) / 1024)
     for i in range(total):
         table = raw_data[:, i * 1024:(i + 1) * 1024]
@@ -82,7 +82,7 @@ def glue_data(file_name, total, output):
             raw_data = []
             for line in lines:
                 raw_data.append(line)
-        raw_data = np.array(raw_data).astype(np.float)
+        raw_data = np.array(raw_data).astype(np.float64)
         #print(i)
         if i == 0:
             gluedata = raw_data
@@ -145,7 +145,7 @@ def decode_data(data, std_num, mode=5):
             decode = model(data)
         if int(std_num) != 0:
             decode = decode * std_num
-    decode = np.array(decode.cpu()).astype(np.float)
+    decode = np.array(decode.cpu()).astype(np.float64)
     return decode
 
 def preprocessing(filename, samplerate):

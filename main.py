@@ -4,7 +4,7 @@ if __name__ == '__main__':
     # parameter setting
     input_path = './sampledata/'
     input_name = 'sampledata.csv'
-    sample_rate = 256
+    sample_rate = 256 # input data sample rate
     modelname = 'ICUNet' # or 'UNetpp'
     output_path = './sampledata/'
     output_name = 'outputsample.csv'
